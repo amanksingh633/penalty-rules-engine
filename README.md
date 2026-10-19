@@ -4,6 +4,11 @@
 ![Dependencies](https://img.shields.io/badge/runtime%20dependencies-none-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+**[Try the live demo](https://amanksingh633.github.io/penalty-rules-engine/)**: runs in your browser, nothing to
+install, nothing uploaded.
+
+[![Live demo screenshot](docs/screenshot.jpg)](https://amanksingh633.github.io/penalty-rules-engine/)
+
 Replace a penalty spreadsheet with versioned rules. The engine evaluates trip data against rules
 at four levels (**trip, driver, vehicle, vendor**), opens a **review ticket** for every hit, and
 will not charge anything until a **named human confirms it**. Every step lands in a
@@ -38,6 +43,14 @@ rules.json ─┘                               │
   `verify-audit` detects edited or deleted records.
 - **Validated config.** Bad rules (unknown metric, bad operator, duplicate IDs) fail on load, not
   halfway through a run.
+
+## Live demo
+
+The demo page loads the real `penalty_engine` package into your browser with
+[Pyodide](https://pyodide.org) (WebAssembly). Evaluate the sample trips, then try to charge a
+pending ticket (the engine refuses), confirm and charge it, and use "Simulate tampering" to watch
+the audit chain catch an edited record. The files under `docs/` are copies of `src/` kept in
+sync by `scripts/sync_demo.py` and checked by a test.
 
 ## Quick start
 
@@ -105,8 +118,10 @@ src/penalty_engine/
   models.py   trips, metrics     rules.py   rule loading and validation
   engine.py   evaluation         store.py   tickets, workflow, audit chain
   cli.py      command line
+docs/         GitHub Pages live demo (Pyodide) + screenshot
+scripts/      sync_demo.py copies the package and sample data into docs/
 sample_data/  synthetic trips + rules, and the generator script
-tests/        20 tests: rules, workflow gates, idempotency, audit tampering, CLI
+tests/        26 tests: rules, workflow gates, idempotency, audit tampering, CLI, demo
 ```
 
 ## Development
