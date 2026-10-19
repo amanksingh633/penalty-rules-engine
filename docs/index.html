@@ -33,12 +33,17 @@
   @media (max-width: 760px) { .grid2, .grid2.review { grid-template-columns: minmax(0, 1fr); } }
   .wrap { overflow-wrap: anywhere; }
   @media (max-width: 760px) {
-    /* keep the review actions on screen: drop Level, Rule and Evidence columns, let buttons wrap */
-    #review th:nth-child(3), #review td:nth-child(3),
-    #review th:nth-child(5), #review td:nth-child(5),
-    #review th:nth-child(7), #review td:nth-child(7) { display: none; }
-    #review td:last-child { white-space: normal; }
+    /* tickets become cards: label on the left, value on the right, actions underneath */
+    #review .scroll { max-height: none; border: 0; overflow: visible; }
+    #review table, #review tbody, #review tr, #review td { display: block; width: 100%; }
+    #review thead { display: none; }
+    #review tr { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; padding: 6px 10px; background: var(--card); }
+    #review td { border: 0; padding: 3px 0; white-space: normal; display: flex; justify-content: space-between; gap: 12px; }
+    #review td::before { content: attr(data-label); color: var(--muted); font-size: 12px; }
+    #review td[data-label="Actions"] { display: block; padding-top: 8px; }
+    #review td[data-label="Actions"]::before { content: none; }
     .actions { flex-wrap: wrap; }
+    .actions button { flex: 1 1 30%; padding: 8px 6px; }
   }
   label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
   textarea, input[type=text] { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
@@ -202,12 +207,14 @@ function render(state) {
       b.onclick = () => run(() => entry.act(op, t.ticket_id, op === "charge" ? "billing-bot" : $("who").value, $("note").value));
       return b;
     };
+    const cell = (label, props, ...kids) => { const td = el("td", props, ...kids); td.dataset.label = label; return td; };
     return el("tr", {},
-      el("td", { className: "mono" }, t.ticket_id), el("td", {}, el("span", { className: "badge " + t.status }, t.status)),
-      el("td", {}, t.level), el("td", {}, t.entity_id), el("td", {}, t.rule_id),
-      el("td", {}, t.proposed_amount.toFixed(2)),
-      el("td", { title: t.evidence_trip_ids.join(", ") }, t.evidence_trip_ids.length + " trip(s)"),
-      el("td", {}, el("div", { className: "actions" }, act("confirm", "Confirm"), act("reject", "Reject"), act("charge", "Charge"))));
+      cell("Ticket", { className: "mono" }, t.ticket_id),
+      cell("Status", {}, el("span", { className: "badge " + t.status }, t.status)),
+      cell("Level", {}, t.level), cell("Entity", {}, t.entity_id), cell("Rule", {}, t.rule_id),
+      cell("Amount", {}, t.proposed_amount.toFixed(2)),
+      cell("Evidence", { title: t.evidence_trip_ids.join(", ") }, t.evidence_trip_ids.length + " trip(s)"),
+      cell("Actions", {}, el("div", { className: "actions" }, act("confirm", "Confirm"), act("reject", "Reject"), act("charge", "Charge"))));
   });
   $("tickets").replaceChildren(...rows);
 
