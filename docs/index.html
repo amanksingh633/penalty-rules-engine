@@ -3,6 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Penalty Rules Engine: live demo">
+<meta property="og:description" content="Rule-driven penalties with mandatory human review and a tamper-evident audit log. Runs the real Python package in your browser.">
+<meta property="og:url" content="https://amanksingh633.github.io/penalty-rules-engine/">
+<meta property="og:image" content="https://amanksingh633.github.io/penalty-rules-engine/screenshot.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Penalty Rules Engine: live demo">
+<meta name="twitter:description" content="Rule-driven penalties with mandatory human review and a tamper-evident audit log. Runs the real Python package in your browser.">
+<meta name="twitter:image" content="https://amanksingh633.github.io/penalty-rules-engine/screenshot.jpg">
 <title>Penalty Rules Engine: live demo</title>
 <meta name="description" content="Rule-driven penalties with a mandatory human review gate and a tamper-evident audit log. Runs the real Python package in your browser; nothing is uploaded.">
 <style>
@@ -164,6 +174,7 @@ async function startPython() {
     entry = py.pyimport("web_entry");
     setStatus("Ready. Python " + py.runPython("import sys; sys.version.split()[0]") + ", running locally.", "ready");
     $("evaluate").disabled = false;
+    $("tamper").disabled = false;
     await samplePromise;
     run(() => entry.start($("trips").value, $("rules").value));
   } catch (err) { setStatus("Could not start Python: " + err.message, "fail"); }
@@ -204,6 +215,7 @@ function render(state) {
   const rows = state.tickets.map((t) => {
     const act = (op, label) => {
       const b = el("button", { className: "small" }, label);
+      b.disabled = !entry;
       b.onclick = () => run(() => entry.act(op, t.ticket_id, op === "charge" ? "billing-bot" : $("who").value, $("note").value));
       return b;
     };
@@ -230,6 +242,14 @@ $("evaluate").onclick = () => run(() => entry.start($("trips").value, $("rules")
 $("tamper").onclick = () => run(() => entry.tamper());
 $("reset").onclick = () => loadSample().then(() => run(() => entry.start($("trips").value, $("rules").value)));
 
+// Show a saved copy of the sample run straight away, while the Python engine loads.
+async function showSnapshot() {
+  try {
+    const state = await (await fetch("sample/precomputed.json")).json();
+    if (!entry) { render(state); $("tamper").disabled = true; }
+  } catch { /* the live run will fill this in */ }
+}
+showSnapshot();
 const samplePromise = loadSample().catch((e) => setStatus("Could not load sample data: " + e.message, "fail"));
 startPython();
 </script>

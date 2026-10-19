@@ -82,3 +82,14 @@ def test_bad_input_returns_an_error_not_an_exception():
     assert "Cannot evaluate" in _call(web_entry.start, "a,b\n1,2\n", RULES)["error"]
     bad_rule = json.dumps({"rules": [{"id": "x", "level": "galaxy"}]})
     assert "Cannot evaluate" in _call(web_entry.start, TRIPS, bad_rule)["error"]
+
+
+def test_precomputed_snapshot_matches_a_live_run():
+    """The page shows this file before Python loads; its tickets must match a live run."""
+    snapshot = json.loads((DOCS / "sample" / "precomputed.json").read_text(encoding="utf-8"))
+    live = _call(web_entry.start, TRIPS, RULES)
+    assert snapshot["tickets"] == live["tickets"], (
+        "docs/sample/precomputed.json is stale: run scripts/sync_demo.py"
+    )
+    assert [r["action"] for r in snapshot["audit"]] == [r["action"] for r in live["audit"]]
+    assert snapshot["audit_ok"] is True
