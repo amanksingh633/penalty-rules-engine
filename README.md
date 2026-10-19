@@ -1,5 +1,6 @@
 # Penalty Rules Engine
 
+[![CI](https://github.com/amanksingh633/penalty-rules-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/amanksingh633/penalty-rules-engine/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Dependencies](https://img.shields.io/badge/runtime%20dependencies-none-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green)
