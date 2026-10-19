@@ -1,0 +1,54 @@
+{
+  "grace_minutes": 5,
+  "low_rating_threshold": 2,
+  "rules": [
+    {
+      "id": "TRIP-LATE",
+      "level": "trip",
+      "signal": "telematics",
+      "metric": "total_late_minutes",
+      "op": ">=",
+      "value": 30,
+      "penalty": { "type": "per_unit", "metric": "total_late_minutes", "rate": 5, "cap": 500 }
+    },
+    {
+      "id": "TRIP-CONDUCT",
+      "level": "trip",
+      "signal": "review",
+      "metric": "conduct_flag_count",
+      "op": ">=",
+      "value": 1,
+      "penalty": { "type": "flat", "amount": 300 }
+    },
+    {
+      "id": "DRIVER-REPEAT-LATE",
+      "level": "driver",
+      "signal": "telematics",
+      "metric": "late_trip_count",
+      "op": ">=",
+      "value": 5,
+      "min_trips": 8,
+      "penalty": { "type": "flat", "amount": 1000 }
+    },
+    {
+      "id": "VEHICLE-LOW-RATING",
+      "level": "vehicle",
+      "signal": "review",
+      "metric": "avg_rating",
+      "op": "<=",
+      "value": 3.0,
+      "min_trips": 5,
+      "penalty": { "type": "flat", "amount": 750 }
+    },
+    {
+      "id": "VENDOR-LATE-RATE",
+      "level": "vendor",
+      "signal": "telematics",
+      "metric": "late_rate",
+      "op": ">=",
+      "value": 0.25,
+      "min_trips": 20,
+      "penalty": { "type": "flat", "amount": 5000 }
+    }
+  ]
+}
