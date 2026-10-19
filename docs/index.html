@@ -28,8 +28,10 @@
   .status { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
   .dot { width: 9px; height: 9px; border-radius: 50%; background: #e0a100; flex: none; }
   .dot.ready { background: var(--ok); } .dot.fail { background: var(--bad); }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .grid2.review { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  @media (max-width: 760px) { .grid2, .grid2.review { grid-template-columns: minmax(0, 1fr); } }
+  .wrap { overflow-wrap: anywhere; }
   label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
   textarea, input[type=text] { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
     border-radius: 8px; padding: 8px; font: 12px/1.4 ui-monospace, Consolas, monospace; }
@@ -90,7 +92,7 @@
 
   <div class="card" id="review" hidden>
     <h2>2. Review tickets</h2>
-    <div class="grid2" style="grid-template-columns: 1fr 2fr">
+    <div class="grid2 review">
       <div><label for="who">Your name (reviewer)</label><input type="text" id="who" value="asha"></div>
       <div><label for="note">Review note (optional)</label><input type="text" id="note" placeholder="e.g. late rate confirmed in telematics export"></div>
     </div>
