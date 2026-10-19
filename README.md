@@ -45,6 +45,33 @@ rules.json ─┘                               │
 - **Validated config.** Bad rules (unknown metric, bad operator, duplicate IDs) fail on load, not
   halfway through a run.
 
+## Product notes
+
+How I would frame this as a product, and the decisions behind it. These are design rationale and
+hypotheses; nothing here is a measured result.
+
+- **Problem.** Penalties managed in spreadsheets are applied inconsistently, are hard to explain
+  when a vendor disputes them, and leave no reliable record of who decided what.
+- **Users.** Operations reviewers who decide; finance who acts on the decision; vendor managers
+  who handle disputes.
+- **Decisions and trade-offs.**
+  - *A named human must confirm before anything is charged.* This is slower than automatic
+    penalties, but it is what makes the system defensible in a dispute.
+  - *Two kinds of evidence kept separate* (telematics for lateness, rider reviews for conduct), so
+    a reviewer can see what a penalty is based on and weigh each differently.
+  - *Four levels with a minimum-trips guard*: a vendor-level penalty from three trips would be
+    unfair, so small samples cannot trigger aggregate rules.
+  - *Rules live in readable JSON, not code*: operations and finance can review them, at the cost
+    of limited expressiveness.
+  - *Idempotent tickets and a hash-chained audit log*: re-running never duplicates work, and
+    after-the-fact edits are detectable.
+  - *"Charge" only records the decision*: the integration with billing is a deliberate boundary.
+- **How I would measure it.** Share of tickets overturned on review (a signal of rule quality);
+  time from detection to decision; disputes per penalty; age of the review backlog.
+- **Next.** A "what would this rule have charged last month?" simulation before activating a
+  rule, an appeal workflow, and a vendor-facing evidence view.
+- **Known gaps.** Thresholds and amounts are illustrative; no real-world pilot, so no outcome data.
+
 ## Live demo
 
 The demo page loads the real `penalty_engine` package into your browser with
