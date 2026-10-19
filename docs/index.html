@@ -32,6 +32,14 @@
   .grid2.review { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
   @media (max-width: 760px) { .grid2, .grid2.review { grid-template-columns: minmax(0, 1fr); } }
   .wrap { overflow-wrap: anywhere; }
+  @media (max-width: 760px) {
+    /* keep the review actions on screen: drop Level, Rule and Evidence columns, let buttons wrap */
+    #review th:nth-child(3), #review td:nth-child(3),
+    #review th:nth-child(5), #review td:nth-child(5),
+    #review th:nth-child(7), #review td:nth-child(7) { display: none; }
+    #review td:last-child { white-space: normal; }
+    .actions { flex-wrap: wrap; }
+  }
   label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
   textarea, input[type=text] { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
     border-radius: 8px; padding: 8px; font: 12px/1.4 ui-monospace, Consolas, monospace; }
