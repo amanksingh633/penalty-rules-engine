@@ -166,7 +166,7 @@ async function loadSample() {
 async function startPython() {
   try {
     if (typeof loadPyodide !== "function") throw new Error("Pyodide script did not load (offline or blocked CDN?)");
-    setStatus("Loading Python (a few MB on first visit)…");
+    setStatus("Loading Python (about 6 MB on first visit). A saved sample run is already shown below.");
     const py = await loadPyodide();
     py.FS.mkdirTree("/home/pyodide/penalty_engine");
     for (const f of PKG_FILES) py.FS.writeFile("/home/pyodide/penalty_engine/" + f, await fetchText("py/penalty_engine/" + f));
